@@ -1,31 +1,29 @@
-import {
-  useEffect,
-  useRef,
-  useState,
-  useCallback,
-} from 'react';
-
+import { useEffect, useRef, useState } from 'react';
 import { useField } from '@unform/core';
-
 import { Container } from './styles';
 
-const Input = ({ name, icon: Icon, ...rest }) => {
+interface InputProps {
+  name: string;
+  placeholder: string;
+}
+
+export function Input({name, placeholder}:InputProps) {
   const inputRef = useRef(null);
 
-  const [isFocused, setIsFocused] = useState(false);
-  const [isFilled, setIsFilled] = useState(false);
+  const [isFocused, setFocused] = useState(false);
+  const [isFilled, setFilled] = useState(false);
 
   const { fieldName, defaultValue, registerField } = useField(name);
 
-  const handleInputFocus = useCallback(() => {
-    setIsFocused(true);
-  }, []);
+  function handleInputFocus() {
+    setFocused(true);
+  }
 
-  const handleInputBlur = useCallback(() => {
-    setIsFocused(false);
+  function handleInputBlur(){
+    setFocused(false);
 
-    setIsFilled(!!inputRef.current?.value);
-  }, []);
+    setFilled(!isFilled);
+  };
 
   useEffect(() => {
     registerField({
@@ -37,14 +35,12 @@ const Input = ({ name, icon: Icon, ...rest }) => {
 
   return (
     <Container isFilled={isFilled} isFocused={isFocused}>
-      {Icon && <Icon size={20} />}
-
       <input
         onFocus={handleInputFocus}
         onBlur={handleInputBlur}
         defaultValue={defaultValue}
+        placeholder={placeholder}
         ref={inputRef}
-        {...rest}
       />
     </Container>
   );
