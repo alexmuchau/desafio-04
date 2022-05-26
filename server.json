@@ -1,12 +1,12 @@
 {
   "foods": [
     {
-      "image": "image",
-      "name": "Moda italiana",
-      "price": "20",
-      "description": "la moda italianja",
-      "available": true,
-      "id": 1
+      "image": "buanoite",
+      "title": "buanoitebuanoite",
+      "price": "buanoite",
+      "description": "buanoitebuanoitebuanoitebuanoite",
+      "id": 0.2898645898919221,
+      "available": true
     }
   ]
 }

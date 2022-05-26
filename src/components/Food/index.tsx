@@ -3,15 +3,15 @@ import { FiEdit3, FiTrash } from 'react-icons/fi';
 import { Container } from './styles';
 import { useFoods, Foods } from '../../hooks/useFoods';
 
-export function Food() {
+interface FoodsProps {
+  onOpenModalEditFood: (foodId: number, food: Foods) => void
+}
+
+export function Food({onOpenModalEditFood}: FoodsProps) {
   const { foods, editFood, removeFood, changeAvailability } = useFoods()
   
   async function toggleAvailable(foodId: number) {
     changeAvailability(foodId)
-  }
-
-  function handleEditFood(foodId: number,food: Foods) {
-    editFood(foodId, food)  
   }
 
   function handleRemoveFood(foodId: number) {
@@ -22,7 +22,7 @@ export function Food() {
     <>
       {foods.map(food => {
         return (
-          <Container available={food.available}>
+          <Container available={food.available} key={food.id}>
             <header>
             <img src={food.img} alt={food.title} />
             </header>
@@ -38,7 +38,7 @@ export function Food() {
                   <button
                     type="button"
                     className="icon"
-                    onClick={() => handleEditFood(food.id, food)}
+                    onClick={() => onOpenModalEditFood(food.id, food)}
                     data-testid={`edit-food-${food.id}`}
                   >
                   <FiEdit3 size={20} />
@@ -74,5 +74,3 @@ export function Food() {
     </>  
   )
 };
-
-export default Food;

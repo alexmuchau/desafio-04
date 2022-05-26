@@ -16,16 +16,18 @@ export interface Foods {
 
 interface FoodContextData {
   foods: Foods[];
-  addFood: (food: Foods) => void 
-  editFood: (foodId: number, food: Foods) => void 
-  removeFood: (foodId: number) => void
-  changeAvailability: (foodId: number) => void
+  editingFood?: Foods;
+  addFood: (food: Foods) => void;
+  editFood: (foodId: number, food: Foods) => void;
+  removeFood: (foodId: number) => void;
+  changeAvailability: (foodId: number) => void;
 }
 
 const FoodContext = createContext<FoodContextData>({} as FoodContextData)
 
 export function FoodProvider({children}: FoodProviderProps): JSX.Element {
   const [foods, setFoods] = useState<Foods[]>([])
+  const [ editingFood, setEditingFood ] = useState<Foods>()
 
   useEffect(() => {
     api.get('/foods')
@@ -36,6 +38,7 @@ export function FoodProvider({children}: FoodProviderProps): JSX.Element {
     try{
       const response = await api.post('/foods', {
         ...food,
+        id: Math.random(),
         available: true,
       });
 
@@ -45,16 +48,18 @@ export function FoodProvider({children}: FoodProviderProps): JSX.Element {
     }
   }
 
-  const editFood = async (foodId: number,newFood: Foods) => {
+  const editFood = async (foodId: number ,newFood: Foods) => {
+    console.log(newFood)
     try {
-      const food = await api.get(`/foods/${foodId}`)
-      
+      const updatedFoods = [...foods]
+      const foodExists = updatedFoods.find(value => value.id === foodId)
 
-      const foodsUpdated = foods.map(value =>
-        value.id !== food.data.id ? value : newFood,
-      );
-
-      setFoods(foodsUpdated);
+      if(foodExists) {  
+        foodExists.title = newFood.title
+        setFoods(updatedFoods)
+      } else {
+        throw Error()
+      }
     } catch (err) {
       console.log(err);
     }
@@ -70,11 +75,11 @@ export function FoodProvider({children}: FoodProviderProps): JSX.Element {
 
   const changeAvailability = async(foodId: number) => {
     const updatedFoods = [...foods]
-    const updatedFood = updatedFoods.find(value => value.id === foodId)
+    const foodExists = updatedFoods.find(value => value.id === foodId)
     
-    if(updatedFood) {
-      updatedFood.available = !updatedFood.available
-      setFoods(data => [...data, updatedFood]);
+    if(foodExists) {
+      foodExists.available = !foodExists.available
+      setFoods(updatedFoods)
     } else {
       throw Error()
     }
@@ -82,7 +87,11 @@ export function FoodProvider({children}: FoodProviderProps): JSX.Element {
   
   return(
     <FoodContext.Provider
-      value={{ foods: foods, addFood: addFood, editFood: editFood, removeFood: removeFood, changeAvailability: changeAvailability}}
+      value={{
+        foods: foods, addFood: addFood, editFood: editFood,
+        removeFood: removeFood, changeAvailability: changeAvailability, 
+        editingFood: editingFood
+      }}
     >
       {children}
     </FoodContext.Provider>

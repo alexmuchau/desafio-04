@@ -2,9 +2,9 @@ import { useState } from 'react';
 
 import { Header } from '../../components/Header';
 import { Food } from '../../components/Food';
-import {ModalAddFood} from '../../components/ModalAddFood';
-import {ModalEditFood} from '../../components/ModalEditFood';
-import { FoodsContainer } from './styles';
+import { ModalAddFood } from '../../components/ModalAddFood';
+import { ModalEditFood } from '../../components/ModalEditFood';
+import { Container, FoodsContainer } from './styles';
 import { useFoods, Foods } from '../../hooks/useFoods';
 
 export function DashboardPage() {
@@ -25,9 +25,9 @@ export function DashboardPage() {
     setIsNewFoodModalOpen(false)
   }
 
-  // function handleOpenModalEditFood() {
-  //   setIsEditFoodModalOpen(true)
-  // }
+  function handleOpenModalEditFood() {
+    setIsEditFoodModalOpen(true)
+  }
 
   function handleCloseModalEditFood() {
     setIsEditFoodModalOpen(false)
@@ -38,25 +38,26 @@ export function DashboardPage() {
   }
   return (
     <>
-      <Header onOpenModalAddFood={handleOpenModalAddFood} />
+     <Header onOpenModalAddFood={handleOpenModalAddFood} />
       <ModalAddFood
         isOpen= {isNewFoodModalOpen}
         onRequestClose={handleCloseModalAddFood}
         onSubmit={handleAddFood}
       />
-      {/* {foods.map(food => {
-        return(
+          
+      <FoodsContainer data-testid="foods-list">
+        <Food onOpenModalEditFood={handleOpenModalEditFood}/>
+      </FoodsContainer>
+      {foods.map(food => {
+        return (
           <ModalEditFood
             isOpen= {isEditFoodModalOpen}
-            editingFood= {food}
+            editingFood={food}
             onRequestClose={handleCloseModalEditFood}
             onSubmit={handleEditFood}
           />
         )
-      })} */}
-      <FoodsContainer data-testid="foods-list">
-        <Food/>
-      </FoodsContainer>
+      })}
     </>
   );
 }
